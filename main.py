@@ -7,7 +7,7 @@ class Evenement:
         #Evenement
         self.evenement = pEvenement
         #Date
-        self.dateEevenement = pDate
+        self.dateEvenement = pDate
 
 
 class CentreDeMaintenance :

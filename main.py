@@ -1,6 +1,10 @@
 # TP Simulation
 import random
 import numpy
+import statistics
+
+tempsSimu = 160
+nbRep = 1
 
 class Evenement:
 
@@ -15,9 +19,13 @@ class CentreDeMaintenance :
 
     NbBus = 0
     NbBusRep = 0
-    AireQc,AireQr,AireBr=0,0,0
+    AireQc,AireQr,AireBr=0.0,0.0,0.0
     Qc,Qr,Bc,Br=0,0,0,0
     echeancier = []
+
+    tempsAttenteMoyenC = 0.0
+    tempsAttenteMoyenR = 0.0
+    TauxUtilsiationCR = 0.0
 
     def insertEvenement(self, evenement):
         notInserted = True
@@ -39,15 +47,15 @@ class CentreDeMaintenance :
         print("DebutSimulation")
         evenement = Evenement("arriveeBus",self.dateSimulation + numpy.random.exponential(2))
         self.insertEvenement(evenement)
-        evenement = Evenement("finSimulation", 160)
+        evenement = Evenement("finSimulation", tempsSimu)  #temps simulation 160
         self.insertEvenement(evenement)
 
     def finSimulation(self):
         print("Fin Simualtion")
         self.echeancier = []
-        tempsAttenteMoyenC = self.AireQc / self.NbBus
-        tempsAttenteMoyenR = self.AireQr / self.NbBusRep
-        TauxUtilsiationCR = self.AireBr /(2*160)
+        self.tempsAttenteMoyenC = self.AireQc / self.NbBus
+        self.tempsAttenteMoyenR = self.AireQr / self.NbBusRep
+        self.TauxUtilsiationCR = self.AireBr /(2*tempsSimu) #temps simulation 160
 
 
     def arriveeBus(self):
@@ -78,7 +86,7 @@ class CentreDeMaintenance :
         if (self.Qc > 0):
             evenement = Evenement("accesControle", self.dateSimulation)
             self.insertEvenement(evenement)
-        if(random.random() < 0.33):
+        if(random.random() < 0.3):
             evenement = Evenement("arriveeFileR", self.dateSimulation)
             self.insertEvenement(evenement)
 
@@ -101,7 +109,7 @@ class CentreDeMaintenance :
         print("Depart reparation")
         self.Br -= 1
         if(self.Qr>0):
-            evenement = Evenement("debutSimulation", self.dateSimulation)
+            evenement = Evenement("accesReparation", self.dateSimulation)
             self.insertEvenement(evenement)
 
 
@@ -112,33 +120,51 @@ class CentreDeMaintenance :
 
 if __name__ == '__main__':
 
-    DateSimulation = 0
-    centreMaintenance = CentreDeMaintenance(DateSimulation)
-    evenement = Evenement("debutSimulation", centreMaintenance.dateSimulation)
-    centreMaintenance.echeancier.append(evenement)
+    listeAttenteMoyenC = []
+    listeAttenteMoyenR = []
+    listeTauxCR = []
+    for x in range(nbRep):
 
-    while(centreMaintenance.echeancier):
-        evt = centreMaintenance.echeancier.pop(0)
-        centreMaintenance.mise_A_Jour_Aires(centreMaintenance.dateSimulation,evt.dateEvenement)
-        centreMaintenance.dateSimulation = evt.dateEvenement
+        DateSimulation = 0
+        centreMaintenance = CentreDeMaintenance(DateSimulation)
+        evenement = Evenement("debutSimulation", centreMaintenance.dateSimulation)
+        centreMaintenance.echeancier.append(evenement)
 
-        if(evt.nomEvenement == "debutSimulation"):
-            centreMaintenance.debutSimulation()
-        elif (evt.nomEvenement == "finSimulation"):
-            centreMaintenance.finSimulation()
-        elif (evt.nomEvenement == "arriveeBus"):
-            centreMaintenance.arriveeBus()
-        elif (evt.nomEvenement == "arriveeFileC"):
-            centreMaintenance.arriveeFileC()
-        elif (evt.nomEvenement == "accesControle"):
-            centreMaintenance.accesControle()
-        elif (evt.nomEvenement == "departControle"):
-            centreMaintenance.departControle()
-        elif (evt.nomEvenement == "arriveeFileR"):
-            centreMaintenance.arriveeFileR()
-        elif (evt.nomEvenement == "accesReparation"):
-            centreMaintenance.accesReparation()
-        elif (evt.nomEvenement == "departReparation"):
-            centreMaintenance.departReparation()
-        else:
-            print("evenement inconnu")
+        while(centreMaintenance.echeancier):
+            evt = centreMaintenance.echeancier.pop(0)
+            centreMaintenance.mise_A_Jour_Aires(centreMaintenance.dateSimulation,evt.dateEvenement)
+            centreMaintenance.dateSimulation = evt.dateEvenement
+
+            if(evt.nomEvenement == "debutSimulation"):
+                centreMaintenance.debutSimulation()
+            elif (evt.nomEvenement == "finSimulation"):
+                centreMaintenance.finSimulation()
+            elif (evt.nomEvenement == "arriveeBus"):
+                centreMaintenance.arriveeBus()
+            elif (evt.nomEvenement == "arriveeFileC"):
+                centreMaintenance.arriveeFileC()
+            elif (evt.nomEvenement == "accesControle"):
+                centreMaintenance.accesControle()
+            elif (evt.nomEvenement == "departControle"):
+                centreMaintenance.departControle()
+            elif (evt.nomEvenement == "arriveeFileR"):
+                centreMaintenance.arriveeFileR()
+            elif (evt.nomEvenement == "accesReparation"):
+                centreMaintenance.accesReparation()
+            elif (evt.nomEvenement == "departReparation"):
+                centreMaintenance.departReparation()
+            else:
+                print("evenement inconnu")
+
+        print("tempsAttenteMoyenC : ", centreMaintenance.tempsAttenteMoyenC)
+        print("tempsAttenteMoyenR : ", centreMaintenance.tempsAttenteMoyenR)
+        print("TauxUtilsiationCR : ", centreMaintenance.TauxUtilsiationCR)
+
+        listeAttenteMoyenC.append(centreMaintenance.tempsAttenteMoyenC)
+        listeAttenteMoyenR.append( centreMaintenance.tempsAttenteMoyenR)
+        listeTauxCR.append(centreMaintenance.TauxUtilsiationCR)
+
+
+    print("moy tempsAttenteMoyenC : ", statistics.mean(listeAttenteMoyenC))
+    print("moy tempsAttenteMoyenR : ", statistics.mean(listeAttenteMoyenR))
+    print("moy TauxUtilsiationCR : ", statistics.mean(listeTauxCR))

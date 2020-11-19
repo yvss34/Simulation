@@ -3,7 +3,7 @@ import random
 import numpy
 import statistics
 
-tempsSimulation = 240
+tempsSimulation = 160
 nbReplications = 500
 
 class Evenement:
@@ -166,6 +166,7 @@ if __name__ == '__main__':
         listTempsAttenteMoyenR.append(centreMaintenance.tempsAttenteMoyenR)
         listTauxUtilsiationCR.append(centreMaintenance.TauxUtilsiationCR)
 
-    print("Moyenne TpsAttMoyAvtCtrl = " + str(statistics.mean(listTempsAttenteMoyenR)) + " sur " + str(nbReplications) + " réplications")
+    print("temps simulation : ", tempsSimulation)
+    print("Moyenne TpsAttMoyAvtCtrl = " + str(statistics.mean(listTempsAttenteMoyenC)) + " sur " + str(nbReplications) + " réplications")
     print("Moyenne TpsAttMoyAvtRep = " + str(statistics.mean(listTempsAttenteMoyenR)) + " sur " + str(nbReplications) + " réplications")
     print("Moyenne TauxUtilisationCentreRep = " + str(statistics.mean(listTauxUtilsiationCR)) + " sur " + str(nbReplications) + " réplications")

@@ -62,8 +62,11 @@ class CentreDeMaintenance :
             self.tempsAttenteMoyenR = 0 # on ne tiendra pas compte de cette valeur
         else:
             self.tempsAttenteMoyenR = self.AireQr / self.NbBusRep
-
-        self.TauxUtilsiationCR = self.AireBr /(2*tempsSimulation)
+        
+        if (self.NbBusRep == 0):
+            self.TauxUtilsiationCR = 0
+        else:
+            self.TauxUtilsiationCR = self.AireBr /(2*tempsSimulation)
 
     def arriveeBus(self):
         # print("arrivee Bus")
@@ -175,8 +178,9 @@ if __name__ == '__main__':
         
         if (centreMaintenance.tempsAttenteMoyenR):
             listTempsAttenteMoyenR.append(centreMaintenance.tempsAttenteMoyenR)
-
-        listTauxUtilsiationCR.append(centreMaintenance.TauxUtilsiationCR)
+            
+        if (centreMaintenance.TauxUtilsiationCR):
+            listTauxUtilsiationCR.append(centreMaintenance.TauxUtilsiationCR)
 
     print("temps simulation : ", tempsSimulation)
     print("Moyenne TpsAttMoyAvtCtrl = " + str(statistics.mean(listTempsAttenteMoyenC)) + " sur " + str(nbReplications) + " réplications")

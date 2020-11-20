@@ -173,14 +173,11 @@ if __name__ == '__main__':
             else:
                 print("evenement inconnu")
             
-        if (centreMaintenance.tempsAttenteMoyenC):
-            listTempsAttenteMoyenC.append(centreMaintenance.tempsAttenteMoyenC)
+        listTempsAttenteMoyenC.append(centreMaintenance.tempsAttenteMoyenC)
         
-        if (centreMaintenance.tempsAttenteMoyenR):
-            listTempsAttenteMoyenR.append(centreMaintenance.tempsAttenteMoyenR)
+        listTempsAttenteMoyenR.append(centreMaintenance.tempsAttenteMoyenR)
             
-        if (centreMaintenance.TauxUtilsiationCR):
-            listTauxUtilsiationCR.append(centreMaintenance.TauxUtilsiationCR)
+        listTauxUtilsiationCR.append(centreMaintenance.TauxUtilsiationCR)
 
     print("temps simulation : ", tempsSimulation)
     print("Moyenne TpsAttMoyAvtCtrl = " + str(statistics.mean(listTempsAttenteMoyenC)) + " sur " + str(nbReplications) + " réplications")

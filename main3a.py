@@ -63,7 +63,10 @@ class CentreDeMaintenance:
         else:
             self.tempsAttenteMoyenR = self.AireQr / self.NbBusRep
 
-        self.TauxUtilsiationCR = self.AireBr / (2 * tempsSimulation)
+        if (self.NbBusRep == 0):
+            self.TauxUtilsiationCR = 0
+        else:
+            self.TauxUtilsiationCR = self.AireBr / (2 * tempsSimulation)
 
     def arriveeBus(self):
         # print("arrivee Bus")
@@ -169,11 +172,9 @@ if __name__ == '__main__':
             else:
                 print("evenement inconnu")
 
-        if (centreMaintenance.tempsAttenteMoyenC):
-            listTempsAttenteMoyenC.append(centreMaintenance.tempsAttenteMoyenC)
+        listTempsAttenteMoyenC.append(centreMaintenance.tempsAttenteMoyenC)
 
-        if (centreMaintenance.tempsAttenteMoyenR):
-            listTempsAttenteMoyenR.append(centreMaintenance.tempsAttenteMoyenR)
+        listTempsAttenteMoyenR.append(centreMaintenance.tempsAttenteMoyenR)
 
         listTauxUtilsiationCR.append(centreMaintenance.TauxUtilsiationCR)
 

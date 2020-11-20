@@ -3,7 +3,7 @@ import random
 import numpy
 import statistics
 
-tempsSimulation = 160
+tempsSimulation = 40
 nbReplications = 500
 
 class Evenement:
@@ -52,10 +52,18 @@ class CentreDeMaintenance :
     def finSimulation(self):
         print("Fin Simualtion")
         self.echeancier.clear()
-        self.tempsAttenteMoyenC = self.AireQc / self.NbBus
-        self.tempsAttenteMoyenR = self.AireQr / self.NbBusRep
-        self.TauxUtilsiationCR = self.AireBr /(2*tempsSimulation)
 
+        if (self.NbBus == 0):
+            self.tempsAttenteMoyenC = 0 # on ne tiendra pas compte de cette valeur
+        else:
+            self.tempsAttenteMoyenC = self.AireQc / self.NbBus
+
+        if (self.NbBusRep == 0):
+            self.tempsAttenteMoyenR = 0 # on ne tiendra pas compte de cette valeur
+        else:
+            self.tempsAttenteMoyenR = self.AireQr / self.NbBusRep
+
+        self.TauxUtilsiationCR = self.AireBr /(2*tempsSimulation)
 
     def arriveeBus(self):
         # print("arrivee Bus")
@@ -162,8 +170,12 @@ if __name__ == '__main__':
             else:
                 print("evenement inconnu")
             
-        listTempsAttenteMoyenC.append(centreMaintenance.tempsAttenteMoyenC)
-        listTempsAttenteMoyenR.append(centreMaintenance.tempsAttenteMoyenR)
+        if (centreMaintenance.tempsAttenteMoyenC):
+            listTempsAttenteMoyenC.append(centreMaintenance.tempsAttenteMoyenC)
+        
+        if (centreMaintenance.tempsAttenteMoyenR):
+            listTempsAttenteMoyenR.append(centreMaintenance.tempsAttenteMoyenR)
+
         listTauxUtilsiationCR.append(centreMaintenance.TauxUtilsiationCR)
 
     print("temps simulation : ", tempsSimulation)

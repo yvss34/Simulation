@@ -218,6 +218,7 @@ if __name__ == '__main__':
         listTempsAttenteMaxFileR.append(centreMaintenance.tempsAttenteMaxFileR)
 
     print("temps simulation : ", tempsSimulation)
+    print("m : ", m)
     print("Moyenne TpsAttMoyAvtCtrl = " + str(statistics.mean(listTempsAttenteMoyenC)) + " sur " + str(nbReplications) + " réplications")
     print("Moyenne TpsAttMoyAvtRep = " + str(statistics.mean(listTempsAttenteMoyenR)) + " sur " + str(nbReplications) + " réplications")
     print("Moyenne TauxUtilisationCentreRep = " + str(statistics.mean(listTauxUtilsiationCR)) + " sur " + str(nbReplications) + " réplications")

@@ -19,6 +19,7 @@ class Evenement:
 
 class CentreDeMaintenance:
     NbBus = 0
+    NbBusControle = 0
     NbBusRep = 0
     AireQc, AireQr, AireBr = 0.0, 0.0, 0.0
     Qc, Qr, Bc, Br = 0, 0, 0, 0
@@ -30,7 +31,6 @@ class CentreDeMaintenance:
 
     tailleMoyenneFileC = 0.0
     tailleMoyenneFileR = 0.0
-
 
     tempsAttenteMaxFileC = 0.0
     tempsAttenteMaxFileR = 0.0
@@ -98,10 +98,9 @@ class CentreDeMaintenance:
         self.Qc -= 1
         self.Bc = 1
         self.NbBus += 1
+        self.NbBusControle = + 1
         evenement = Evenement("departControle", self.dateSimulation + random.uniform(0.25, 1.0833))
         self.insertEvenement(evenement)
-
-
 
     def departControle(self):
         # print("Depart Controle")
@@ -143,7 +142,6 @@ class CentreDeMaintenance:
         self.calcultempsAttenteMaxFileC((D2 - D1) * self.Qc)
         self.calcultempsAttenteMaxFileR((D2 - D1) * self.Qr)
 
-
     def calcultempsAttenteMaxFileC(self, param):
         if param > self.tempsAttenteMaxFileC:
             self.tempsAttenteMaxFileC = param
@@ -176,11 +174,11 @@ if __name__ == '__main__':
 
         while (centreMaintenance.echeancier):
 
-            if centreMaintenance.NbBus == m:
+            if centreMaintenance.NbBusControle >= m:
                 break
             # print([centreMaintenance.echeancier[i].nomEvenement for i in range(len(centreMaintenance.echeancier))])
             evt = centreMaintenance.echeancier.pop(0)
-            if(evt.nomEvenement != "arriveeFileC" or evt.nomEvenement != "arriveeFileR"):
+            if (evt.nomEvenement != "arriveeFileC" or evt.nomEvenement != "arriveeFileR"):
                 centreMaintenance.mise_A_Jour_Aires(centreMaintenance.dateSimulation, evt.dateEvenement)
             centreMaintenance.dateSimulation = evt.dateEvenement
 
@@ -218,13 +216,19 @@ if __name__ == '__main__':
         listTempsAttenteMaxFileC.append(centreMaintenance.tempsAttenteMaxFileC)
         listTempsAttenteMaxFileR.append(centreMaintenance.tempsAttenteMaxFileR)
 
-    print("temps simulation : ", tempsSimulation)
     print("m : ", m)
-    print("Moyenne TpsAttMoyAvtCtrl = " + str(statistics.mean(listTempsAttenteMoyenC)) + " sur " + str(nbReplications) + " réplications")
-    print("Moyenne TpsAttMoyAvtRep = " + str(statistics.mean(listTempsAttenteMoyenR)) + " sur " + str(nbReplications) + " réplications")
-    print("Moyenne TauxUtilisationCentreRep = " + str(statistics.mean(listTauxUtilsiationCR)) + " sur " + str(nbReplications) + " réplications")
+
+    print("temps simulation : ", tempsSimulation)
+    print("Moyenne TpsAttMoyAvtCtrl = " + str(statistics.mean(listTempsAttenteMoyenC)) + " sur " + str(
+        nbReplications) + " réplications")
+    print("Moyenne TpsAttMoyAvtRep = " + str(statistics.mean(listTempsAttenteMoyenR)) + " sur " + str(
+        nbReplications) + " réplications")
+    print("Moyenne TauxUtilisationCentreRep = " + str(statistics.mean(listTauxUtilsiationCR)) + " sur " + str(
+        nbReplications) + " réplications")
     print("temps d'attente max file C = " + str(max(listTempsAttenteMaxFileC)))
     print("temps d'attente max file R = " + str(max(listTempsAttenteMaxFileR)))
 
-    print("Moyenne TailleMoyenneFileC = " + str(statistics.mean(listTailleMoyenneFileC)) + " sur " + str(nbReplications) + " réplications")
-    print("Moyenne TailleMoyenneFileR = " + str(statistics.mean(listTailleMoyenneFileR)) + " sur " + str(nbReplications) + " réplications")
+    print("Moyenne TailleMoyenneFileC = " + str(statistics.mean(listTailleMoyenneFileC)) + " sur " + str(
+        nbReplications) + " réplications")
+    print("Moyenne TailleMoyenneFileR = " + str(statistics.mean(listTailleMoyenneFileR)) + " sur " + str(
+        nbReplications) + " réplications")

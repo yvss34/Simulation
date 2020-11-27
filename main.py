@@ -18,6 +18,7 @@ class Evenement:
 
 class CentreDeMaintenance:
     NbBus = 0
+    NbBusControle = 0
     NbBusRep = 0
     AireQc, AireQr, AireBr = 0.0, 0.0, 0.0
     Qc, Qr, Bc, Br = 0, 0, 0, 0
@@ -96,6 +97,7 @@ class CentreDeMaintenance:
         # print("Acces controle")
         self.Qc -= 1
         self.Bc = 1
+        self.NbBusControle += 1
         evenement = Evenement("departControle", self.dateSimulation + random.uniform(0.25, 1.0833))
         self.insertEvenement(evenement)
 
@@ -169,7 +171,7 @@ if __name__ == '__main__':
 
         while (centreMaintenance.echeancier):
 
-            if centreMaintenance.NbBus == m:
+            if centreMaintenance.NbBusControle >= m:
                 break
 
             # print([centreMaintenance.echeancier[i].nomEvenement for i in range(len(centreMaintenance.echeancier))])

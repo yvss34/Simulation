@@ -5,6 +5,7 @@ import statistics
 
 tempsSimulation = 40
 nbReplications = 500
+m = 80
 
 
 class Evenement:
@@ -100,6 +101,8 @@ class CentreDeMaintenance:
         evenement = Evenement("departControle", self.dateSimulation + random.uniform(0.25, 1.0833))
         self.insertEvenement(evenement)
 
+
+
     def departControle(self):
         # print("Depart Controle")
         self.Bc = 0
@@ -161,7 +164,6 @@ if __name__ == '__main__':
     listTailleMoyenneFileC = []
     listTailleMoyenneFileR = []
 
-
     for i in range(nbReplications):
 
         print("\n \nreplication : " + str(i))
@@ -173,6 +175,8 @@ if __name__ == '__main__':
 
         while (centreMaintenance.echeancier):
 
+            if centreMaintenance.NbBus == m:
+                break
             # print([centreMaintenance.echeancier[i].nomEvenement for i in range(len(centreMaintenance.echeancier))])
             evt = centreMaintenance.echeancier.pop(0)
             if(evt.nomEvenement != "arriveeFileC" or evt.nomEvenement != "arriveeFileR"):

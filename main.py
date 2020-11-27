@@ -6,21 +6,21 @@ import statistics
 tempsSimulation = 40
 nbReplications = 500
 
+
 class Evenement:
 
-    def __init__(self,pNomEvenement,pDate):
-        #Evenement
+    def __init__(self, pNomEvenement, pDate):
+        # Evenement
         self.nomEvenement = pNomEvenement
-        #Date
+        # Date
         self.dateEvenement = pDate
 
 
-class CentreDeMaintenance :
-
+class CentreDeMaintenance:
     NbBus = 0
     NbBusRep = 0
-    AireQc,AireQr,AireBr=0.0,0.0,0.0
-    Qc,Qr,Bc,Br=0,0,0,0
+    AireQc, AireQr, AireBr = 0.0, 0.0, 0.0
+    Qc, Qr, Bc, Br = 0, 0, 0, 0
     echeancier = []
 
     tempsAttenteMoyenC = 0.0
@@ -30,8 +30,8 @@ class CentreDeMaintenance :
     tailleMoyenneFileC = 0.0
     tailleMoyenneFileR = 0.0
 
-    def __init__(self,pDate):
-        #Date simualtion en heures
+    def __init__(self, pDate):
+        # Date simualtion en heures
         self.dateSimulation = pDate
 
     def insertEvenement(self, evenement):
@@ -47,7 +47,7 @@ class CentreDeMaintenance :
 
     def debutSimulation(self):
         print("Debut Simulation")
-        evenement = Evenement("arriveeBus",self.dateSimulation + numpy.random.exponential(2))
+        evenement = Evenement("arriveeBus", self.dateSimulation + numpy.random.exponential(2))
         self.insertEvenement(evenement)
         evenement = Evenement("finSimulation", tempsSimulation)
         self.insertEvenement(evenement)
@@ -57,19 +57,19 @@ class CentreDeMaintenance :
         self.echeancier.clear()
 
         if (self.NbBus == 0):
-            self.tempsAttenteMoyenC = 0 # on ne tiendra pas compte de cette valeur
+            self.tempsAttenteMoyenC = 0  # on ne tiendra pas compte de cette valeur
         else:
             self.tempsAttenteMoyenC = self.AireQc / self.NbBus
 
         if (self.NbBusRep == 0):
-            self.tempsAttenteMoyenR = 0 # on ne tiendra pas compte de cette valeur
+            self.tempsAttenteMoyenR = 0  # on ne tiendra pas compte de cette valeur
         else:
             self.tempsAttenteMoyenR = self.AireQr / self.NbBusRep
-        
+
         if (self.NbBusRep == 0):
             self.TauxUtilsiationCR = 0
         else:
-            self.TauxUtilsiationCR = self.AireBr /(2*tempsSimulation)
+            self.TauxUtilsiationCR = self.AireBr / (2 * tempsSimulation)
 
         self.tailleMoyenneFileC = self.AireQc / tempsSimulation
         self.tailleMoyenneFileR = self.AireQr / tempsSimulation
@@ -85,7 +85,7 @@ class CentreDeMaintenance :
     def arriveeFileC(self):
         # print("Arrivé file controle")
         self.Qc += 1
-        if(self.Bc == 0):
+        if (self.Bc == 0):
             evenement = Evenement("accesControle", self.dateSimulation)
             self.insertEvenement(evenement)
 
@@ -102,7 +102,7 @@ class CentreDeMaintenance :
         if (self.Qc > 0):
             evenement = Evenement("accesControle", self.dateSimulation)
             self.insertEvenement(evenement)
-        if(random.random() < 0.3):
+        if (random.random() < 0.3):
             evenement = Evenement("arriveeFileR", self.dateSimulation)
             self.insertEvenement(evenement)
 
@@ -124,12 +124,11 @@ class CentreDeMaintenance :
     def departReparation(self):
         # print("Depart reparation")
         self.Br -= 1
-        if(self.Qr>0):
+        if (self.Qr > 0):
             evenement = Evenement("accesReparation", self.dateSimulation)
             self.insertEvenement(evenement)
 
-
-    def mise_A_Jour_Aires(self,D1,D2):
+    def mise_A_Jour_Aires(self, D1, D2):
         self.AireQc += (D2 - D1) * self.Qc
         self.AireQr += (D2 - D1) * self.Qr
         self.AireBr += (D2 - D1) * self.Br
@@ -153,15 +152,14 @@ if __name__ == '__main__':
         evenement = Evenement("debutSimulation", centreMaintenance.dateSimulation)
         centreMaintenance.echeancier.append(evenement)
 
-
-        while(centreMaintenance.echeancier):
+        while (centreMaintenance.echeancier):
 
             # print([centreMaintenance.echeancier[i].nomEvenement for i in range(len(centreMaintenance.echeancier))])
             evt = centreMaintenance.echeancier.pop(0)
-            centreMaintenance.mise_A_Jour_Aires(centreMaintenance.dateSimulation,evt.dateEvenement)
+            centreMaintenance.mise_A_Jour_Aires(centreMaintenance.dateSimulation, evt.dateEvenement)
             centreMaintenance.dateSimulation = evt.dateEvenement
 
-            if(evt.nomEvenement == "debutSimulation"):
+            if (evt.nomEvenement == "debutSimulation"):
                 centreMaintenance.debutSimulation()
             elif (evt.nomEvenement == "finSimulation"):
                 centreMaintenance.finSimulation()
@@ -181,21 +179,55 @@ if __name__ == '__main__':
                 centreMaintenance.departReparation()
             else:
                 print("evenement inconnu")
-            
+
         listTempsAttenteMoyenC.append(centreMaintenance.tempsAttenteMoyenC)
-        
+
         listTempsAttenteMoyenR.append(centreMaintenance.tempsAttenteMoyenR)
-            
+
         listTauxUtilsiationCR.append(centreMaintenance.TauxUtilsiationCR)
 
         listTailleMoyenneFileC.append(centreMaintenance.tailleMoyenneFileC)
 
         listTailleMoyenneFileR.append(centreMaintenance.tailleMoyenneFileR)
 
-    print("temps simulation : ", tempsSimulation)
-    print("Moyenne TpsAttMoyAvtCtrl = " + str(statistics.mean(listTempsAttenteMoyenC)) + " sur " + str(nbReplications) + " réplications")
-    print("Moyenne TpsAttMoyAvtRep = " + str(statistics.mean(listTempsAttenteMoyenR)) + " sur " + str(nbReplications) + " réplications")
-    print("Moyenne TauxUtilisationCentreRep = " + str(statistics.mean(listTauxUtilsiationCR)) + " sur " + str(nbReplications) + " réplications")
+    moyenneTpsAttMoyAvtCtrl = statistics.mean(listTempsAttenteMoyenC)
+    moyenneTpsAttMoyAvtRep = statistics.mean(listTempsAttenteMoyenR)
+    moyenneTauxUtilisationCentreRep = statistics.mean(listTauxUtilsiationCR)
+    moyenneTailleMoyenneFileC = statistics.mean(listTailleMoyenneFileC)
+    moyenneTailleMoyenneFileR = statistics.mean(listTailleMoyenneFileR)
 
-    print("Moyenne TailleMoyenneFileC = " + str(statistics.mean(listTailleMoyenneFileC)) + " sur " + str(nbReplications) + " réplications")
-    print("Moyenne TailleMoyenneFileR = " + str(statistics.mean(listTailleMoyenneFileR)) + " sur " + str(nbReplications) + " réplications")
+    print("temps simulation : ", tempsSimulation)
+    print(
+        "Moyenne TpsAttMoyAvtCtrl = " + str(moyenneTpsAttMoyAvtCtrl) + " sur " + str(nbReplications) + " réplications")
+    print("Moyenne TpsAttMoyAvtRep = " + str(moyenneTpsAttMoyAvtRep) + " sur " + str(nbReplications) + " réplications")
+    print("Moyenne TauxUtilisationCentreRep = " + str(moyenneTauxUtilisationCentreRep) + " sur " + str(
+        nbReplications) + " réplications")
+
+    print("Moyenne TailleMoyenneFileC = " + str(moyenneTailleMoyenneFileC) + " sur " + str(
+        nbReplications) + " réplications")
+    print("Moyenne TailleMoyenneFileR = " + str(moyenneTailleMoyenneFileR) + " sur " + str(
+        nbReplications) + " réplications")
+
+    sigmaTpsAttMoyAvtCtrl = 0.0
+    sigmaTpsAttMoyAvtRep = 0.0
+    sigmaTauxUtilisationCentreRep = 0.0
+    sigmaTailleMoyenneFileC = 0.0
+    sigmaTailleMoyenneFileR = 0.0
+    for i in range(nbReplications):
+        sigmaTpsAttMoyAvtCtrl += (listTempsAttenteMoyenC[i] - moyenneTpsAttMoyAvtCtrl) ** 2
+        sigmaTpsAttMoyAvtRep += (listTempsAttenteMoyenR[i] - moyenneTpsAttMoyAvtRep) ** 2
+        sigmaTauxUtilisationCentreRep += (listTauxUtilsiationCR[i] - moyenneTauxUtilisationCentreRep) ** 2
+        sigmaTailleMoyenneFileC += (listTailleMoyenneFileC[i] - moyenneTailleMoyenneFileC) ** 2
+        sigmaTailleMoyenneFileR += (listTailleMoyenneFileR[i] - moyenneTailleMoyenneFileR) ** 2
+
+    sigmaTpsAttMoyAvtCtrl /= (1 / (nbReplications - 1))
+    sigmaTpsAttMoyAvtRep /= (1 / (nbReplications - 1))
+    sigmaTauxUtilisationCentreRep /= (1 / (nbReplications - 1))
+    sigmaTailleMoyenneFileC /= (1 / (nbReplications - 1))
+    sigmaTailleMoyenneFileR /= (1 / (nbReplications - 1))
+
+    print("sigmaTpsAttMoyAvtCtrl : " + str(sigmaTpsAttMoyAvtCtrl))
+    print("sigmaTpsAttMoyAvtRep : " + str(sigmaTpsAttMoyAvtRep))
+    print("sigmaTauxUtilisationCentreRep : " + str(sigmaTauxUtilisationCentreRep))
+    print("sigmaTailleMoyenneFileC : " + str(sigmaTailleMoyenneFileC))
+    print("sigmaTailleMoyenneFileR : " + str(sigmaTailleMoyenneFileR))

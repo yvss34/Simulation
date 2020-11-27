@@ -25,13 +25,13 @@ class CentreDeMaintenance:
 
     tempsAttenteMoyenC = 0.0
     tempsAttenteMoyenR = 0.0
-    TauxUtilsiationCR = 0.0
+    TauxUtilisationCR = 0.0
 
     tailleMoyenneFileC = 0.0
     tailleMoyenneFileR = 0.0
 
     def __init__(self, pDate):
-        # Date simualtion en heures
+        # Date simulation en heures
         self.dateSimulation = pDate
 
     def insertEvenement(self, evenement):
@@ -53,7 +53,7 @@ class CentreDeMaintenance:
         self.insertEvenement(evenement)
 
     def finSimulation(self):
-        print("Fin Simualtion")
+        print("Fin Simulation")
         self.echeancier.clear()
 
         if (self.NbBus == 0):
@@ -67,9 +67,9 @@ class CentreDeMaintenance:
             self.tempsAttenteMoyenR = self.AireQr / self.NbBusRep
 
         if (self.NbBusRep == 0):
-            self.TauxUtilsiationCR = 0
+            self.TauxUtilisationCR = 0
         else:
-            self.TauxUtilsiationCR = self.AireBr / (2 * tempsSimulation)
+            self.TauxUtilisationCR = self.AireBr / (2 * tempsSimulation)
 
         self.tailleMoyenneFileC = self.AireQc / tempsSimulation
         self.tailleMoyenneFileR = self.AireQr / tempsSimulation
@@ -184,7 +184,7 @@ if __name__ == '__main__':
 
         listTempsAttenteMoyenR.append(centreMaintenance.tempsAttenteMoyenR)
 
-        listTauxUtilsiationCR.append(centreMaintenance.TauxUtilsiationCR)
+        listTauxUtilsiationCR.append(centreMaintenance.TauxUtilisationCR)
 
         listTailleMoyenneFileC.append(centreMaintenance.tailleMoyenneFileC)
 
@@ -195,6 +195,8 @@ if __name__ == '__main__':
     moyenneTauxUtilisationCentreRep = statistics.mean(listTauxUtilsiationCR)
     moyenneTailleMoyenneFileC = statistics.mean(listTailleMoyenneFileC)
     moyenneTailleMoyenneFileR = statistics.mean(listTailleMoyenneFileR)
+
+    print("\n ------------ Valeurs de sortie --------------")
 
     print("temps simulation : ", tempsSimulation)
     print(
@@ -220,11 +222,13 @@ if __name__ == '__main__':
         sigmaTailleMoyenneFileC += (listTailleMoyenneFileC[i] - moyenneTailleMoyenneFileC) ** 2
         sigmaTailleMoyenneFileR += (listTailleMoyenneFileR[i] - moyenneTailleMoyenneFileR) ** 2
 
-    sigmaTpsAttMoyAvtCtrl /= (1 / (nbReplications - 1))
-    sigmaTpsAttMoyAvtRep /= (1 / (nbReplications - 1))
-    sigmaTauxUtilisationCentreRep /= (1 / (nbReplications - 1))
-    sigmaTailleMoyenneFileC /= (1 / (nbReplications - 1))
-    sigmaTailleMoyenneFileR /= (1 / (nbReplications - 1))
+    sigmaTpsAttMoyAvtCtrl /= nbReplications - 1
+    sigmaTpsAttMoyAvtRep /= nbReplications - 1
+    sigmaTauxUtilisationCentreRep /= nbReplications - 1
+    sigmaTailleMoyenneFileC /= nbReplications - 1
+    sigmaTailleMoyenneFileR /= nbReplications - 1
+
+    print("\n ------------- Sigma ---------------")
 
     print("sigmaTpsAttMoyAvtCtrl : " + str(sigmaTpsAttMoyAvtCtrl))
     print("sigmaTpsAttMoyAvtRep : " + str(sigmaTpsAttMoyAvtRep))

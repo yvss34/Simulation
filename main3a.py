@@ -3,7 +3,7 @@ import random
 import numpy
 import statistics
 
-tempsSimulation = 40
+tempsSimulation = 160
 nbReplications = 500
 
 
@@ -16,12 +16,34 @@ class Evenement:
         self.dateEvenement = pDate
 
 
+class Bus:
+
+    # accesControle = 1 quand le bus accede au controle
+    accesControle = 0
+
+    dateArriveeControle = 0
+    dateAccesControle = 0
+
+    # accesReparation = 1 quand le bus accede au controle
+    accesReparation = 0
+
+    dateArriveeReparation = 0
+    dateAccesReparation = 0
+
+    def __init__(self,pIdentifiant):
+        # Identifiant
+        self.identifiant = pIdentifiant
+
+
 class CentreDeMaintenance:
     NbBus = 0
     NbBusRep = 0
+    NbBusC = 0
+    NbBusR = 0
     AireQc, AireQr, AireBr = 0.0, 0.0, 0.0
     Qc, Qr, Bc, Br = 0, 0, 0, 0
     echeancier = []
+    tableauBus = []
 
     tempsAttenteMoyenC = 0.0
     tempsAttenteMoyenR = 0.0
@@ -80,6 +102,12 @@ class CentreDeMaintenance:
 
     def arriveeBus(self):
         # print("arrivee Bus")
+
+        bus = Bus(self.NbBus)
+        bus.dateArriveeControle = self.dateSimulation
+        self.tableauBus.append(bus)
+
+        self.NbBus += 1
         evenement = Evenement("arriveeBus", self.dateSimulation + numpy.random.exponential(2))
         self.insertEvenement(evenement)
         evenement = Evenement("arriveeFileC", self.dateSimulation)
@@ -96,7 +124,13 @@ class CentreDeMaintenance:
         # print("Acces controle")
         self.Qc -= 1
         self.Bc = 1
-        self.NbBus += 1
+
+        for bus in self.tableauBus:
+            if(bus.identifiant == self.NbBusC):
+                bus.accesControle = 1
+                bus.dateAccesControle = self.dateSimulation
+
+        self.NbBusC += 1
         evenement = Evenement("departControle", self.dateSimulation + random.uniform(0.25, 1.0833))
         self.insertEvenement(evenement)
 
@@ -113,6 +147,12 @@ class CentreDeMaintenance:
     def arriveeFileR(self):
         # print("Arrivee file reparation")
         self.Qr += 1
+
+        for bus in self.tableauBus:
+            if(bus.identifiant == self.NbBusRep):
+                bus.dateArriveeReparation = self.dateSimulation
+
+        self.NbBusRep += 1
         if (self.Br < 2):
             evenement = Evenement("accesReparation", self.dateSimulation)
             self.insertEvenement(evenement)
@@ -121,7 +161,13 @@ class CentreDeMaintenance:
         # print("Arrivé reparation")
         self.Qr -= 1
         self.Br += 1
-        self.NbBusRep += 1
+
+        for bus in self.tableauBus:
+            if(bus.identifiant == self.NbBusR):
+                bus.accesReparation = 1
+                bus.dateArriveeReparation = self.dateSimulation
+
+        self.NbBusR += 1
         evenement = Evenement("departReparation", self.dateSimulation + random.uniform(2.1, 4.5))
         self.insertEvenement(evenement)
 
@@ -222,3 +268,17 @@ if __name__ == '__main__':
 
     print("Moyenne TailleMoyenneFileC = " + str(statistics.mean(listTailleMoyenneFileC)) + " sur " + str(nbReplications) + " réplications")
     print("Moyenne TailleMoyenneFileR = " + str(statistics.mean(listTailleMoyenneFileR)) + " sur " + str(nbReplications) + " réplications")
+
+    tempsAttMoyenC = 0
+    tempsAttMoyenR = 0
+    for bus in centreMaintenance.tableauBus:
+        if(bus.accesControle == 1):
+            tempsAttMoyenC += (bus.dateAccesControle - bus.dateArriveeControle)
+        if (bus.accesReparation == 1):
+            tempsAttMoyenR += (bus.dateAccesReparation - bus.dateArriveeReparation)
+
+    tempsAttMoyenC = tempsAttMoyenC / centreMaintenance.NbBusC
+    tempsAttMoyenR = tempsAttMoyenR / centreMaintenance.NbBusR
+
+    print("TpsAttAvtContole = " + str(tempsAttMoyenC))
+    print("TpsAttAvtReparation = " + str(tempsAttMoyenR))

@@ -3,7 +3,7 @@ import random
 import numpy
 import statistics
 
-tempsSimulation = 160
+tempsSimulation = 40
 nbReplications = 500
 
 
@@ -26,6 +26,9 @@ class CentreDeMaintenance:
     tempsAttenteMoyenC = 0.0
     tempsAttenteMoyenR = 0.0
     TauxUtilsiationCR = 0.0
+
+    tailleMoyenneFileC = 0.0
+    tailleMoyenneFileR = 0.0
 
     def __init__(self, pDate):
         # Date simualtion en heures
@@ -67,6 +70,9 @@ class CentreDeMaintenance:
             self.TauxUtilsiationCR = 0
         else:
             self.TauxUtilsiationCR = self.AireBr / (2 * tempsSimulation)
+
+        self.tailleMoyenneFileC = self.AireQc / tempsSimulation
+        self.tailleMoyenneFileR = self.AireQr / tempsSimulation
 
     def arriveeBus(self):
         # print("arrivee Bus")
@@ -134,6 +140,10 @@ if __name__ == '__main__':
     listTempsAttenteMoyenR = []
     listTauxUtilsiationCR = []
 
+    listTailleMoyenneFileC = []
+    listTailleMoyenneFileR = []
+
+
     for i in range(nbReplications):
 
         print("\n \nreplication : " + str(i))
@@ -178,7 +188,16 @@ if __name__ == '__main__':
 
         listTauxUtilsiationCR.append(centreMaintenance.TauxUtilsiationCR)
 
+        listTailleMoyenneFileC.append(centreMaintenance.tailleMoyenneFileC)
+
+        listTailleMoyenneFileR.append(centreMaintenance.tailleMoyenneFileR)
+
     print("temps simulation : ", tempsSimulation)
     print("Moyenne TpsAttMoyAvtCtrl = " + str(statistics.mean(listTempsAttenteMoyenC)) + " sur " + str(nbReplications) + " réplications")
     print("Moyenne TpsAttMoyAvtRep = " + str(statistics.mean(listTempsAttenteMoyenR)) + " sur " + str(nbReplications) + " réplications")
     print("Moyenne TauxUtilisationCentreRep = " + str(statistics.mean(listTauxUtilsiationCR)) + " sur " + str(nbReplications) + " réplications")
+
+    print("Moyenne TailleMoyenneFileC = " + str(statistics.mean(listTailleMoyenneFileC)) + " sur " + str(
+        nbReplications) + " réplications")
+    print("Moyenne TailleMoyenneFileR = " + str(statistics.mean(listTailleMoyenneFileR)) + " sur " + str(
+        nbReplications) + " réplications")

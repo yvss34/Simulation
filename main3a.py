@@ -158,6 +158,7 @@ if __name__ == '__main__':
     listTempsAttenteMoyenC = []
     listTempsAttenteMoyenR = []
     listTauxUtilsiationCR = []
+
     listTempsAttenteMaxFileC = []
     listTempsAttenteMaxFileR = []
 

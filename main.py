@@ -5,7 +5,7 @@ import statistics
 
 tempsSimulation = 40
 nbReplications = 500
-
+m = 80
 
 class Evenement:
 
@@ -29,6 +29,9 @@ class CentreDeMaintenance:
 
     tailleMoyenneFileC = 0.0
     tailleMoyenneFileR = 0.0
+
+    tempsAttenteMaxFileC = 0.0
+    tempsAttenteMaxFileR = 0.0
 
     def __init__(self, pDate):
         # Date simualtion en heures
@@ -132,13 +135,25 @@ class CentreDeMaintenance:
         self.AireQc += (D2 - D1) * self.Qc
         self.AireQr += (D2 - D1) * self.Qr
         self.AireBr += (D2 - D1) * self.Br
+        self.calcultempsAttenteMaxFileC((D2 - D1) * self.Qc)
+        self.calcultempsAttenteMaxFileR((D2 - D1) * self.Qr)
 
+    def calcultempsAttenteMaxFileC(self, param):
+        if param > self.tempsAttenteMaxFileC:
+            self.tempsAttenteMaxFileC = param
+
+    def calcultempsAttenteMaxFileR(self, param):
+        if param > self.tempsAttenteMaxFileC:
+            self.tempsAttenteMaxFileR = param
 
 if __name__ == '__main__':
 
     listTempsAttenteMoyenC = []
     listTempsAttenteMoyenR = []
     listTauxUtilsiationCR = []
+
+    listTempsAttenteMaxFileC = []
+    listTempsAttenteMaxFileR = []
 
     listTailleMoyenneFileC = []
     listTailleMoyenneFileR = []
@@ -153,6 +168,9 @@ if __name__ == '__main__':
         centreMaintenance.echeancier.append(evenement)
 
         while (centreMaintenance.echeancier):
+
+            if centreMaintenance.NbBus == m:
+                break
 
             # print([centreMaintenance.echeancier[i].nomEvenement for i in range(len(centreMaintenance.echeancier))])
             evt = centreMaintenance.echeancier.pop(0)
@@ -190,11 +208,16 @@ if __name__ == '__main__':
 
         listTailleMoyenneFileR.append(centreMaintenance.tailleMoyenneFileR)
 
+        listTempsAttenteMaxFileC.append(centreMaintenance.tempsAttenteMaxFileC)
+        listTempsAttenteMaxFileR.append(centreMaintenance.tempsAttenteMaxFileR)
+
     moyenneTpsAttMoyAvtCtrl = statistics.mean(listTempsAttenteMoyenC)
     moyenneTpsAttMoyAvtRep = statistics.mean(listTempsAttenteMoyenR)
     moyenneTauxUtilisationCentreRep = statistics.mean(listTauxUtilsiationCR)
     moyenneTailleMoyenneFileC = statistics.mean(listTailleMoyenneFileC)
     moyenneTailleMoyenneFileR = statistics.mean(listTailleMoyenneFileR)
+
+    print("m : ", m)
 
     print("temps simulation : ", tempsSimulation)
     print(
@@ -207,6 +230,9 @@ if __name__ == '__main__':
         nbReplications) + " réplications")
     print("Moyenne TailleMoyenneFileR = " + str(moyenneTailleMoyenneFileR) + " sur " + str(
         nbReplications) + " réplications")
+
+    print("temps d'attente max file C = " + str(max(listTempsAttenteMaxFileC)))
+    print("temps d'attente max file R = " + str(max(listTempsAttenteMaxFileR)))
 
     sigmaTpsAttMoyAvtCtrl = 0.0
     sigmaTpsAttMoyAvtRep = 0.0

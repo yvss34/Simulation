@@ -31,9 +31,7 @@ class CentreDeMaintenance:
     tailleMoyenneFileR = 0.0
 
 
-    listtempsAttenteMaxFileC = [0]
     tempsAttenteMaxFileC = 0.0
-    listtempsAttenteMaxFileR = [0]
     tempsAttenteMaxFileR = 0.0
 
     def __init__(self, pDate):
@@ -144,11 +142,11 @@ class CentreDeMaintenance:
 
 
     def calcultempsAttenteMaxFileC(self, param):
-        if param > max(self.listtempsAttenteMaxFileC):
+        if param > self.tempsAttenteMaxFileC:
             self.tempsAttenteMaxFileC = param
 
     def calcultempsAttenteMaxFileR(self, param):
-        if param > max(self.listtempsAttenteMaxFileR):
+        if param > self.tempsAttenteMaxFileC:
             self.tempsAttenteMaxFileR = param
 
 
@@ -157,8 +155,8 @@ if __name__ == '__main__':
     listTempsAttenteMoyenC = []
     listTempsAttenteMoyenR = []
     listTauxUtilsiationCR = []
-    repetionstempsAttenteMaxFileC = []
-    repetionstempsAttenteMaxFileR = []
+    listTempsAttenteMaxFileC = []
+    listTempsAttenteMaxFileR = []
 
     listTailleMoyenneFileC = []
     listTailleMoyenneFileR = []
@@ -212,15 +210,15 @@ if __name__ == '__main__':
 
         listTailleMoyenneFileR.append(centreMaintenance.tailleMoyenneFileR)
 
-        repetionstempsAttenteMaxFileC.append(centreMaintenance.tempsAttenteMaxFileC)
-        repetionstempsAttenteMaxFileR.append(centreMaintenance.tempsAttenteMaxFileR)
+        listTempsAttenteMaxFileC.append(centreMaintenance.tempsAttenteMaxFileC)
+        listTempsAttenteMaxFileR.append(centreMaintenance.tempsAttenteMaxFileR)
 
     print("temps simulation : ", tempsSimulation)
     print("Moyenne TpsAttMoyAvtCtrl = " + str(statistics.mean(listTempsAttenteMoyenC)) + " sur " + str(nbReplications) + " réplications")
     print("Moyenne TpsAttMoyAvtRep = " + str(statistics.mean(listTempsAttenteMoyenR)) + " sur " + str(nbReplications) + " réplications")
     print("Moyenne TauxUtilisationCentreRep = " + str(statistics.mean(listTauxUtilsiationCR)) + " sur " + str(nbReplications) + " réplications")
+    print("temps d'attente max file C = " + str(max(listTempsAttenteMaxFileC)))
+    print("temps d'attente max file R = " + str(max(listTempsAttenteMaxFileR)))
 
     print("Moyenne TailleMoyenneFileC = " + str(statistics.mean(listTailleMoyenneFileC)) + " sur " + str(nbReplications) + " réplications")
     print("Moyenne TailleMoyenneFileR = " + str(statistics.mean(listTailleMoyenneFileR)) + " sur " + str(nbReplications) + " réplications")
-    print("temps d'attente max file C = " + str(max(repetionstempsAttenteMaxFileC)))
-    print("temps d'attente max file R = " + str(max(repetionstempsAttenteMaxFileR)))

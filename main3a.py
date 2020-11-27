@@ -30,6 +30,12 @@ class CentreDeMaintenance:
     tailleMoyenneFileC = 0.0
     tailleMoyenneFileR = 0.0
 
+
+    listtempsAttenteMaxFileC = [0]
+    tempsAttenteMaxFileC = 0.0
+    listtempsAttenteMaxFileR = [0]
+    tempsAttenteMaxFileR = 0.0
+
     def __init__(self, pDate):
         # Date simualtion en heures
         self.dateSimulation = pDate
@@ -129,9 +135,21 @@ class CentreDeMaintenance:
             self.insertEvenement(evenement)
 
     def mise_A_Jour_Aires(self, D1, D2):
+
         self.AireQc += (D2 - D1) * self.Qc
         self.AireQr += (D2 - D1) * self.Qr
         self.AireBr += (D2 - D1) * self.Br
+        self.calcultempsAttenteMaxFileC((D2 - D1) * self.Qc)
+        self.calcultempsAttenteMaxFileR((D2 - D1) * self.Qr)
+
+
+    def calcultempsAttenteMaxFileC(self, param):
+        if param > max(self.listtempsAttenteMaxFileC):
+            self.tempsAttenteMaxFileC = param
+
+    def calcultempsAttenteMaxFileR(self, param):
+        if param > max(self.listtempsAttenteMaxFileR):
+            self.tempsAttenteMaxFileR = param
 
 
 if __name__ == '__main__':
@@ -139,6 +157,8 @@ if __name__ == '__main__':
     listTempsAttenteMoyenC = []
     listTempsAttenteMoyenR = []
     listTauxUtilsiationCR = []
+    repetionstempsAttenteMaxFileC = []
+    repetionstempsAttenteMaxFileR = []
 
     listTailleMoyenneFileC = []
     listTailleMoyenneFileR = []
@@ -192,6 +212,9 @@ if __name__ == '__main__':
 
         listTailleMoyenneFileR.append(centreMaintenance.tailleMoyenneFileR)
 
+        repetionstempsAttenteMaxFileC.append(centreMaintenance.tempsAttenteMaxFileC)
+        repetionstempsAttenteMaxFileR.append(centreMaintenance.tempsAttenteMaxFileR)
+
     print("temps simulation : ", tempsSimulation)
     print("Moyenne TpsAttMoyAvtCtrl = " + str(statistics.mean(listTempsAttenteMoyenC)) + " sur " + str(nbReplications) + " réplications")
     print("Moyenne TpsAttMoyAvtRep = " + str(statistics.mean(listTempsAttenteMoyenR)) + " sur " + str(nbReplications) + " réplications")
@@ -199,3 +222,5 @@ if __name__ == '__main__':
 
     print("Moyenne TailleMoyenneFileC = " + str(statistics.mean(listTailleMoyenneFileC)) + " sur " + str(nbReplications) + " réplications")
     print("Moyenne TailleMoyenneFileR = " + str(statistics.mean(listTailleMoyenneFileR)) + " sur " + str(nbReplications) + " réplications")
+    print("temps d'attente max file C = " + str(max(repetionstempsAttenteMaxFileC)))
+    print("temps d'attente max file R = " + str(max(repetionstempsAttenteMaxFileR)))

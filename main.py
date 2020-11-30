@@ -249,11 +249,13 @@ if __name__ == '__main__':
         sigmaTailleMoyenneFileC += (listTailleMoyenneFileC[i] - moyenneTailleMoyenneFileC) ** 2
         sigmaTailleMoyenneFileR += (listTailleMoyenneFileR[i] - moyenneTailleMoyenneFileR) ** 2
 
-    sigmaTpsAttMoyAvtCtrl /= (1 / (nbReplications - 1))
-    sigmaTpsAttMoyAvtRep /= (1 / (nbReplications - 1))
-    sigmaTauxUtilisationCentreRep /= (1 / (nbReplications - 1))
-    sigmaTailleMoyenneFileC /= (1 / (nbReplications - 1))
-    sigmaTailleMoyenneFileR /= (1 / (nbReplications - 1))
+    sigmaTpsAttMoyAvtCtrl /= nbReplications - 1
+    sigmaTpsAttMoyAvtRep /= nbReplications - 1
+    sigmaTauxUtilisationCentreRep /= nbReplications - 1
+    sigmaTailleMoyenneFileC /= nbReplications - 1
+    sigmaTailleMoyenneFileR /= nbReplications - 1
+
+    print("\n ------------- Sigma ---------------")
 
     print("sigmaTpsAttMoyAvtCtrl : " + str(sigmaTpsAttMoyAvtCtrl))
     print("sigmaTpsAttMoyAvtRep : " + str(sigmaTpsAttMoyAvtRep))

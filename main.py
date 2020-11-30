@@ -171,8 +171,9 @@ if __name__ == '__main__':
 
         while (centreMaintenance.echeancier):
 
-            if centreMaintenance.NbBusControle >= m:
-                break
+            if m != -1:
+                if centreMaintenance.NbBusControle >= m:
+                    break
 
             # print([centreMaintenance.echeancier[i].nomEvenement for i in range(len(centreMaintenance.echeancier))])
             evt = centreMaintenance.echeancier.pop(0)

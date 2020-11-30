@@ -4,7 +4,7 @@ import numpy
 import statistics
 
 tempsSimulation = 160
-nbReplications = 500
+nbReplications = 100
 
 
 class Evenement:
@@ -24,7 +24,7 @@ class Bus:
     dateArriveeControle = 0
     dateAccesControle = 0
 
-    # accesReparation = 1 quand le bus accede au controle
+    # accesReparation = 1 quand le bus accede a la reparation
     accesReparation = 0
 
     dateArriveeReparation = 0
@@ -52,6 +52,8 @@ class CentreDeMaintenance:
     tailleMoyenneFileC = 0.0
     tailleMoyenneFileR = 0.0
 
+    tempsAttenteMoyenC2 = 0.0
+    tempsAttenteMoyenR2 = 0.0
 
     tempsAttenteMaxFileC = 0.0
     tempsAttenteMaxFileR = 0.0
@@ -97,11 +99,31 @@ class CentreDeMaintenance:
         else:
             self.TauxUtilsiationCR = self.AireBr / (2 * tempsSimulation)
 
+        tmpTempsAttenteC = 0.0
+        tmpTempsAttenteR = 0.0
+        for bus in self.tableauBus:
+            if (bus.accesControle == 1):
+                tmpTempsAttenteC += (bus.dateAccesControle - bus.dateArriveeControle)
+            if (bus.accesReparation == 1):
+                tmpTempsAttenteR += (bus.dateAccesReparation - bus.dateArriveeReparation)
+
+        if(self.NbBusC == 0):
+            self.tempsAttenteMoyenC2 = 0
+        else:
+            self.tempsAttenteMoyenC2 = tmpTempsAttenteC/self.NbBusC
+        if(self.NbBusR == 0):
+            self.tempsAttenteMoyenR2 = 0
+        else:
+            self.tempsAttenteMoyenR2 = tmpTempsAttenteR/self.NbBusR
+
+
         self.tailleMoyenneFileC = self.AireQc / tempsSimulation
         self.tailleMoyenneFileR = self.AireQr / tempsSimulation
 
+        self.tableauBus.clear()
+
     def arriveeBus(self):
-        # print("arrivee Bus")
+        #print("arrivee Bus")
 
         bus = Bus(self.NbBus)
         bus.dateArriveeControle = self.dateSimulation
@@ -121,7 +143,7 @@ class CentreDeMaintenance:
             self.insertEvenement(evenement)
 
     def accesControle(self):
-        # print("Acces controle")
+        #print("Acces controle")
         self.Qc -= 1
         self.Bc = 1
 
@@ -165,7 +187,7 @@ class CentreDeMaintenance:
         for bus in self.tableauBus:
             if(bus.identifiant == self.NbBusR):
                 bus.accesReparation = 1
-                bus.dateArriveeReparation = self.dateSimulation
+                bus.dateAccesReparation = self.dateSimulation
 
         self.NbBusR += 1
         evenement = Evenement("departReparation", self.dateSimulation + random.uniform(2.1, 4.5))
@@ -207,6 +229,8 @@ if __name__ == '__main__':
     listTailleMoyenneFileC = []
     listTailleMoyenneFileR = []
 
+    listTempsAttenteMoyenC2 = []
+    listTempsAttenteMoyenR2 = []
 
     for i in range(nbReplications):
 
@@ -221,8 +245,9 @@ if __name__ == '__main__':
 
             # print([centreMaintenance.echeancier[i].nomEvenement for i in range(len(centreMaintenance.echeancier))])
             evt = centreMaintenance.echeancier.pop(0)
-            if(evt.nomEvenement != "arriveeFileC" or evt.nomEvenement != "arriveeFileR"):
-                centreMaintenance.mise_A_Jour_Aires(centreMaintenance.dateSimulation, evt.dateEvenement)
+
+            centreMaintenance.mise_A_Jour_Aires(centreMaintenance.dateSimulation, evt.dateEvenement)
+
             centreMaintenance.dateSimulation = evt.dateEvenement
 
             if (evt.nomEvenement == "debutSimulation"):
@@ -259,6 +284,14 @@ if __name__ == '__main__':
         listTempsAttenteMaxFileC.append(centreMaintenance.tempsAttenteMaxFileC)
         listTempsAttenteMaxFileR.append(centreMaintenance.tempsAttenteMaxFileR)
 
+        listTempsAttenteMoyenC2.append(centreMaintenance.tempsAttenteMoyenC2)
+        listTempsAttenteMoyenR2.append(centreMaintenance.tempsAttenteMoyenR2)
+
+        print(centreMaintenance.NbBusC)
+        print(centreMaintenance.NbBusR)
+
+
+
     print("temps simulation : ", tempsSimulation)
     print("Moyenne TpsAttMoyAvtCtrl = " + str(statistics.mean(listTempsAttenteMoyenC)) + " sur " + str(nbReplications) + " réplications")
     print("Moyenne TpsAttMoyAvtRep = " + str(statistics.mean(listTempsAttenteMoyenR)) + " sur " + str(nbReplications) + " réplications")
@@ -269,16 +302,7 @@ if __name__ == '__main__':
     print("Moyenne TailleMoyenneFileC = " + str(statistics.mean(listTailleMoyenneFileC)) + " sur " + str(nbReplications) + " réplications")
     print("Moyenne TailleMoyenneFileR = " + str(statistics.mean(listTailleMoyenneFileR)) + " sur " + str(nbReplications) + " réplications")
 
-    tempsAttMoyenC = 0
-    tempsAttMoyenR = 0
-    for bus in centreMaintenance.tableauBus:
-        if(bus.accesControle == 1):
-            tempsAttMoyenC += (bus.dateAccesControle - bus.dateArriveeControle)
-        if (bus.accesReparation == 1):
-            tempsAttMoyenR += (bus.dateAccesReparation - bus.dateArriveeReparation)
 
-    tempsAttMoyenC = tempsAttMoyenC / centreMaintenance.NbBusC
-    tempsAttMoyenR = tempsAttMoyenR / centreMaintenance.NbBusR
 
-    print("TpsAttAvtContole = " + str(tempsAttMoyenC))
-    print("TpsAttAvtReparation = " + str(tempsAttMoyenR))
+    print("Moyenne TpsAttMoyAvtCtrl 3a) = " + str(statistics.mean(listTempsAttenteMoyenC2)))
+    print("Moyenne TpsAttMoyAvtRep 3a) = " + str(statistics.mean(listTempsAttenteMoyenR2)))

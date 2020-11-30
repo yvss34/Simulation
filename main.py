@@ -3,7 +3,7 @@ import random
 import numpy
 import statistics
 
-tempsSimulation = 40
+tempsSimulation = 160
 nbReplications = 500
 m = 80
 
@@ -136,6 +136,7 @@ class CentreDeMaintenance:
         self.AireBr += (D2 - D1) * self.Br
 
 
+
 if __name__ == '__main__':
 
     listTempsAttenteMoyenC = []
@@ -208,6 +209,7 @@ if __name__ == '__main__':
     print("m : ", m)
 
     print("temps simulation : ", tempsSimulation)
+    print("---------------- Données de sortie -------------------")
     print(
         "Moyenne TpsAttMoyAvtCtrl = " + str(moyenneTpsAttMoyAvtCtrl) + " sur " + str(nbReplications) + " réplications")
     print("Moyenne TpsAttMoyAvtRep = " + str(moyenneTpsAttMoyAvtRep) + " sur " + str(nbReplications) + " réplications")
@@ -244,3 +246,5 @@ if __name__ == '__main__':
     print("sigmaTauxUtilisationCentreRep : " + str(sigmaTauxUtilisationCentreRep))
     print("sigmaTailleMoyenneFileC : " + str(sigmaTailleMoyenneFileC))
     print("sigmaTailleMoyenneFileR : " + str(sigmaTailleMoyenneFileR))
+
+

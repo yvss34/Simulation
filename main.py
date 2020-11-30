@@ -5,7 +5,7 @@ import statistics
 
 tempsSimulation = 160
 nbReplications = 500
-m = 80
+m = -1
 
 class Evenement:
 

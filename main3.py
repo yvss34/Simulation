@@ -59,7 +59,7 @@ class CentreDeMaintenance:
     tempsAttenteMaxFileR = 0.0
 
     def __init__(self, pDate):
-        # Date simualtion en heures
+        # Date simulation en heures
         self.dateSimulation = pDate
 
     def insertEvenement(self, evenement):
@@ -81,7 +81,7 @@ class CentreDeMaintenance:
         self.insertEvenement(evenement)
 
     def finSimulation(self):
-        print("Fin Simualtion")
+        print("Fin Simulation")
         self.echeancier.clear()
 
         if (self.NbBus == 0):
@@ -284,6 +284,8 @@ if __name__ == '__main__':
 
 
     print("temps simulation : ", tempsSimulation)
+
+    print("---------- Données de sortie -------------")
 
     print("Moyenne TpsAttMoyAvtCtrl = " + str(statistics.mean(listTempsAttenteMoyenC)) + " sur " + str(nbReplications) + " réplications")
     print("Moyenne TpsAttMoyAvtRep = " + str(statistics.mean(listTempsAttenteMoyenR)) + " sur " + str(nbReplications) + " réplications")

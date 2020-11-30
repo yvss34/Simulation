@@ -101,11 +101,17 @@ class CentreDeMaintenance:
 
         tmpTempsAttenteC = 0.0
         tmpTempsAttenteR = 0.0
+
         for bus in self.tableauBus:
             if (bus.accesControle == 1):
                 tmpTempsAttenteC += (bus.dateAccesControle - bus.dateArriveeControle)
+                if((bus.dateAccesControle - bus.dateArriveeControle) > self.tempsAttenteMaxFileC):
+                    self.tempsAttenteMaxFileC = (bus.dateAccesControle - bus.dateArriveeControle)
+
             if (bus.accesReparation == 1):
                 tmpTempsAttenteR += (bus.dateAccesReparation - bus.dateArriveeReparation)
+                if ((bus.dateAccesReparation - bus.dateArriveeReparation) > self.tempsAttenteMaxFileR):
+                    self.tempsAttenteMaxFileR = (bus.dateAccesReparation - bus.dateArriveeReparation)
 
         if(self.NbBusC == 0):
             self.tempsAttenteMoyenC2 = 0
@@ -205,17 +211,6 @@ class CentreDeMaintenance:
         self.AireQc += (D2 - D1) * self.Qc
         self.AireQr += (D2 - D1) * self.Qr
         self.AireBr += (D2 - D1) * self.Br
-        self.calcultempsAttenteMaxFileC((D2 - D1) * self.Qc)
-        self.calcultempsAttenteMaxFileR((D2 - D1) * self.Qr)
-
-
-    def calcultempsAttenteMaxFileC(self, param):
-        if param > self.tempsAttenteMaxFileC:
-            self.tempsAttenteMaxFileC = param
-
-    def calcultempsAttenteMaxFileR(self, param):
-        if param > self.tempsAttenteMaxFileC:
-            self.tempsAttenteMaxFileR = param
 
 
 if __name__ == '__main__':
@@ -223,8 +218,8 @@ if __name__ == '__main__':
     listTempsAttenteMoyenC = []
     listTempsAttenteMoyenR = []
     listTauxUtilsiationCR = []
-    listTempsAttenteMaxFileC = []
-    listTempsAttenteMaxFileR = []
+    listTempsAttenteMaxC = []
+    listTempsAttenteMaxR = []
 
     listTailleMoyenneFileC = []
     listTailleMoyenneFileR = []
@@ -272,37 +267,29 @@ if __name__ == '__main__':
                 print("evenement inconnu")
 
         listTempsAttenteMoyenC.append(centreMaintenance.tempsAttenteMoyenC)
-
         listTempsAttenteMoyenR.append(centreMaintenance.tempsAttenteMoyenR)
 
         listTauxUtilsiationCR.append(centreMaintenance.TauxUtilsiationCR)
 
         listTailleMoyenneFileC.append(centreMaintenance.tailleMoyenneFileC)
-
         listTailleMoyenneFileR.append(centreMaintenance.tailleMoyenneFileR)
-
-        listTempsAttenteMaxFileC.append(centreMaintenance.tempsAttenteMaxFileC)
-        listTempsAttenteMaxFileR.append(centreMaintenance.tempsAttenteMaxFileR)
 
         listTempsAttenteMoyenC2.append(centreMaintenance.tempsAttenteMoyenC2)
         listTempsAttenteMoyenR2.append(centreMaintenance.tempsAttenteMoyenR2)
 
-        print(centreMaintenance.NbBusC)
-        print(centreMaintenance.NbBusR)
+        listTempsAttenteMaxC.append(centreMaintenance.tempsAttenteMaxFileC)
+        listTempsAttenteMaxR.append(centreMaintenance.tempsAttenteMaxFileR)
+
 
 
 
     print("temps simulation : ", tempsSimulation)
+
     print("Moyenne TpsAttMoyAvtCtrl = " + str(statistics.mean(listTempsAttenteMoyenC)) + " sur " + str(nbReplications) + " réplications")
     print("Moyenne TpsAttMoyAvtRep = " + str(statistics.mean(listTempsAttenteMoyenR)) + " sur " + str(nbReplications) + " réplications")
-    print("Moyenne TauxUtilisationCentreRep = " + str(statistics.mean(listTauxUtilsiationCR)) + " sur " + str(nbReplications) + " réplications")
-    print("temps d'attente max file C = " + str(max(listTempsAttenteMaxFileC)))
-    print("temps d'attente max file R = " + str(max(listTempsAttenteMaxFileR)))
-
-    print("Moyenne TailleMoyenneFileC = " + str(statistics.mean(listTailleMoyenneFileC)) + " sur " + str(nbReplications) + " réplications")
-    print("Moyenne TailleMoyenneFileR = " + str(statistics.mean(listTailleMoyenneFileR)) + " sur " + str(nbReplications) + " réplications")
-
-
 
     print("Moyenne TpsAttMoyAvtCtrl 3a) = " + str(statistics.mean(listTempsAttenteMoyenC2)))
     print("Moyenne TpsAttMoyAvtRep 3a) = " + str(statistics.mean(listTempsAttenteMoyenR2)))
+
+    print("Temps d'attente Max file Controle = "+str(max(listTempsAttenteMaxC)))
+    print("Temps d'attente Max file Reparation = " + str(max(listTempsAttenteMaxR)))

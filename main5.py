@@ -4,7 +4,7 @@ import numpy
 import statistics
 import matplotlib.pyplot as plt
 
-tempsSimulation = 160
+tempsSimulation = 240
 nbReplications = 20
 m = 200
 w = 30
